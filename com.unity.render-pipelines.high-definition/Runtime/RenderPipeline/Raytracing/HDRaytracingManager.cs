@@ -539,7 +539,10 @@ namespace UnityEngine.Rendering.HighDefinition
             m_MaterialsDirty |= (matCount != m_MaterialCRCs.Count);
 
             // build the acceleration structure
-            m_CurrentRAS.Build();
+            if (ShaderConfig.s_CameraRelativeRendering != 0)
+                m_CurrentRAS.Build(hdCamera.camera.transform.position);
+            else
+                m_CurrentRAS.Build();
 
             // tag the structures as valid
             m_ValidRayTracingState = true;

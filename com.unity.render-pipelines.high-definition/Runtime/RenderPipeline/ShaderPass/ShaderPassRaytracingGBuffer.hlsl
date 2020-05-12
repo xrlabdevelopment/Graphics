@@ -16,7 +16,7 @@ void ClosestHitGBuffer(inout RayIntersectionGBuffer rayIntersectionGbuffer : SV_
     float3 viewWS = -rayIntersectionGbuffer.incidentDirection;
 
     // Make sure to add the additional travel distance
-    float travelDistance = length(GetAbsolutePositionWS(fragInput.positionRWS) - rayIntersectionGbuffer.origin);
+    float travelDistance = length(fragInput.positionRWS - rayIntersectionGbuffer.origin);
     rayIntersectionGbuffer.cone.width += travelDistance * rayIntersectionGbuffer.cone.spreadAngle;
 
     PositionInputs posInput;

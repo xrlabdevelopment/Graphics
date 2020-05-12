@@ -68,7 +68,7 @@ void RAYTRACING_DEFERRED(uint3 dispatchThreadId : SV_DispatchThreadID, uint2 gro
 
     // First let's compute the position of the pixel from which the ray has been shot
     PositionInputs sourcePosInput = GetPositionInput(currentCoord, _ScreenSize.zw, depthValue, UNITY_MATRIX_I_VP, GetWorldToViewMatrix(), 0);
-    float3 positionWS = GetAbsolutePositionWS(sourcePosInput.positionWS);
+    float3 positionWS = sourcePosInput.positionWS;
 
     // Then compute the pos input of the intersection vertice
     float3 rayDirection = LOAD_TEXTURE2D_X(_RaytracingDirectionBuffer, currentCoord).xyz;
@@ -76,7 +76,7 @@ void RAYTRACING_DEFERRED(uint3 dispatchThreadId : SV_DispatchThreadID, uint2 gro
     float3 intersectionPositionWS = positionWS + rayDirection * rayDistance;
 
     PositionInputs posInput;
-    posInput.positionWS = GetCameraRelativePositionWS(intersectionPositionWS);
+    posInput.positionWS = intersectionPositionWS;
     posInput.positionSS = currentCoord;
 
     float3 V = -rayDirection;
@@ -171,7 +171,7 @@ void RaytracingDiffuseDeferred(uint3 dispatchThreadId : SV_DispatchThreadID, uin
 
     // Create the pos input
     PositionInputs posInput;
-    posInput.positionWS = GetCameraRelativePositionWS(LOAD_TEXTURE2D_X(_PositionTextureRW, currentCoord).xyz);
+    posInput.positionWS = LOAD_TEXTURE2D_X(_PositionTextureRW, currentCoord).xyz;
     posInput.positionSS = currentCoord;
 
     // Compute the prelight data

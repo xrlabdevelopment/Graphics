@@ -87,9 +87,8 @@ void ClosestHit(inout PathIntersection pathIntersection : SV_RayPayload, Attribu
     BSDFData bsdfData = ConvertSurfaceDataToBSDFData(posInput.positionSS, surfaceData);
 
 #ifdef HAS_LIGHTLOOP
-
     // Let's compute the world space position (the non-camera relative one if camera relative rendering is enabled)
-    float3 shadingPosition = GetAbsolutePositionWS(fragInput.positionRWS);
+    float3 shadingPosition = fragInput.positionRWS;
 
     // Generate the new sample (following values of the sequence)
     float3 inputSample = 0.0;

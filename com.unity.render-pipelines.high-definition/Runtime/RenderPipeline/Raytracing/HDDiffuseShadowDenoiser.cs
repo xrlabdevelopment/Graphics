@@ -124,9 +124,16 @@ namespace UnityEngine.Rendering.HighDefinition
             int numTilesX = (texWidth + (areaTileSize - 1)) / areaTileSize;
             int numTilesY = (texHeight + (areaTileSize - 1)) / areaTileSize;
 
+            // Make sure the position is in the right space before injecting it
+            Vector3 lightPositionRWS = lightPosition;
+            if (ShaderConfig.s_CameraRelativeRendering != 0)
+            {
+                lightPositionRWS -= hdCamera.camera.transform.position;
+            }
+
             // Bind input uniforms
+            cmd.SetComputeVectorParam(m_ShadowDenoiser, HDShaderIDs._SphereLightPosition, lightPositionRWS);
             cmd.SetComputeIntParam(m_ShadowDenoiser, HDShaderIDs._DenoiserFilterRadius, kernelSize);
-            cmd.SetComputeVectorParam(m_ShadowDenoiser, HDShaderIDs._SphereLightPosition, lightPosition);
             cmd.SetComputeFloatParam(m_ShadowDenoiser, HDShaderIDs._SphereLightRadius, lightRadius);
 
             // Bind Input Textures
@@ -144,7 +151,7 @@ namespace UnityEngine.Rendering.HighDefinition
 
             // Bind input uniforms
             cmd.SetComputeIntParam(m_ShadowDenoiser, HDShaderIDs._DenoiserFilterRadius, kernelSize);
-            cmd.SetComputeVectorParam(m_ShadowDenoiser, HDShaderIDs._SphereLightPosition, lightPosition);
+            cmd.SetComputeVectorParam(m_ShadowDenoiser, HDShaderIDs._SphereLightPosition, lightPositionRWS);
             cmd.SetComputeFloatParam(m_ShadowDenoiser, HDShaderIDs._SphereLightRadius, lightRadius);
 
             cmd.SetComputeTextureParam(m_ShadowDenoiser, m_BilateralFilterVSingleSphereKernel, HDShaderIDs._DenoiseInputTexture, intermediateBuffer0);

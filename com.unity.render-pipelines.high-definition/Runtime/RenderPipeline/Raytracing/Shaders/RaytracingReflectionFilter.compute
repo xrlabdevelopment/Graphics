@@ -78,10 +78,11 @@ void REFLECTION_INTEGRATION_UPSCALE(uint3 dispatchThreadId : SV_DispatchThreadID
 
     // Compute the world space position
     PositionInputs posInput = GetPositionInput(targetCoord, _ScreenSize.zw, depth, UNITY_MATRIX_I_VP, UNITY_MATRIX_V);
-    float3 positionWS = GetAbsolutePositionWS(posInput.positionWS);
+    // The position is always in the right space.
+    const float3 positionWS = posInput.positionWS;
 
     // Compute the view in world space
-    float3 viewWS = normalize(_WorldSpaceCameraPos - positionWS);
+    const float3 viewWS = GetWorldSpaceNormalizeViewDir(positionWS);
 
     // Compute the reflected direction for this view direction
     float3 reflDir = reflect(-viewWS, normalWS);

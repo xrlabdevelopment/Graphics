@@ -28,6 +28,7 @@
 TEXTURE3D(_ShadowFilterMapping);
 
 // This value is the maximal distance value that the filter supports
+#define RAY_TRACING_CAMERA_MAX_DISTANCE 50.0f
 #define RAY_TRACING_LIGHT_MAX_DISTANCE 50.0f
 #define RAY_TRACING_OCCLUDER_MAX_DISTANCE 10.0f
 
@@ -67,17 +68,17 @@ void BILATERAL_FILTER(uint3 dispatchThreadId : SV_DispatchThreadID, uint2 groupT
     const BilateralData center = TapBilateralData(centerCoord);
 
     // Compute the normalized view vector
-    float distanceValue = clamp(length(_WorldSpaceCameraPos - center.position) / RAY_TRACING_LIGHT_MAX_DISTANCE, 0.0, 1.0);
+    float distanceValue = clamp(length(GetWorldSpaceViewDir(center.position)) / RAY_TRACING_CAMERA_MAX_DISTANCE, 0.0, 1.0);
 
 #if DIRECTIONAL_LIGHT
     // Evaluate the normalized solid angle of the light
     float lightSolidAngle = _DirectionalLightAngle / (PI * 0.5f);
 #else
     // Compute the light vector
-    float lightPointDistance = clamp(length(_SphereLightPosition - GetAbsolutePositionWS(center.position)) / RAY_TRACING_LIGHT_MAX_DISTANCE, 0.0, 1.0);
+    float lightPointDistance = clamp(length(_SphereLightPosition - center.position), 0.0, RAY_TRACING_LIGHT_MAX_DISTANCE);
 
     // Evaluate the normalized solid angle of the light
-    float lightSolidAngle = atan(_SphereLightRadius / lightPointDistance) / PI;
+    float lightSolidAngle = atan(_SphereLightRadius / lightPointDistance) / (PI * 0.5f);
 #endif
 
     // Grab the normalized/clamped distance between the point and its occluder
