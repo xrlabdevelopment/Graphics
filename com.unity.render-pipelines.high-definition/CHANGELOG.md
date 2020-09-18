@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added option to display timing stats in the debug menu as an average over 1 second. 
 - Added a light unit slider to provide users more context when authoring physically based values.
 - Added a way to check the normals through the material views.
+- Added a new overridable function that defines the local frame to use for a given material.
 
 ### Fixed
 - Fixed several issues with physically-based DoF (TAA ghosting of the CoC buffer, smooth layer transitions, etc)
@@ -96,6 +97,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed alignment of framesettings in HDRP Default Settings
 - Fixed an exception thrown when closing the look dev because there is no active SRP anymore.
 - Fixed an issue where entering playmode would close the LookDev window.
+- Fixed profiling scope for quality RTGI.
+- Fixed the denoising and multi-sample not being used for smooth multibounce RTReflections.
 
 ### Changed
 - Preparation pass for RTSSShadows to be supported by render graph.
@@ -123,6 +126,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Optimized Grain and sRGB Dithering.
 - On platforms that allow it skip the first mip of the depth pyramid and compute it alongside the depth buffer used for low res transparents.
 - When trying to install the local configuration package, if another one is already present the user is now asked whether they want to keep it or not.
+- Changed which local frame is used for multi-bounce RTReflections.
 
 ## [10.0.0] - 2019-06-10
 
