@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering.Universal;
-
+using System.Collections.Generic;
 namespace UnityEditor.Rendering.Universal
 {
     [CustomPropertyDrawer(typeof(StencilStateData), true)]
@@ -10,30 +10,31 @@ namespace UnityEditor.Rendering.Universal
         {
             public static readonly GUIContent overrideStencil =
                 new GUIContent("Stencil", "Override stencil rendering.");
-
+ 
             public static readonly GUIContent stencilValue = new GUIContent("Value",
                 "The stencil index to write to.");
-
+ 
             public static readonly GUIContent stencilFunction = new GUIContent("Compare Function",
                 "Choose the comparison function against the stencil value on screen.");
-
+ 
             public static readonly GUIContent stencilPass =
                 new GUIContent("Pass", "What happens to the stencil value when passing.");
-
+ 
             public static readonly GUIContent stencilFail =
                 new GUIContent("Fail", "What happens to the stencil value when failing.");
-
+ 
             public static readonly GUIContent stencilZFail =
                 new GUIContent("Z Fail", "What happens to the stencil value when failing Z testing.");
         }
-
-        private bool firstTime = true;
-
+ 
+       // private bool firstTime = true;
+        private List<SerializedObject> properties = new List<SerializedObject>();
+ 
         //Stencil rendering
         private const int stencilBits = 4;
         private const int minStencilValue = 0;
         private const int maxStencilValue = (1 << stencilBits) - 1;
-
+ 
         //Stencil props
         private SerializedProperty m_OverrideStencil;
         private SerializedProperty m_StencilIndex;
@@ -41,7 +42,7 @@ namespace UnityEditor.Rendering.Universal
         private SerializedProperty m_StencilPass;
         private SerializedProperty m_StencilFail;
         private SerializedProperty m_StencilZFail;
-
+ 
         void Init(SerializedProperty property)
         {
             //Stencil
@@ -51,17 +52,17 @@ namespace UnityEditor.Rendering.Universal
             m_StencilPass = property.FindPropertyRelative("passOperation");
             m_StencilFail = property.FindPropertyRelative("failOperation");
             m_StencilZFail = property.FindPropertyRelative("zFailOperation");
-
-            firstTime = false;
+ 
+            properties.Add(property.serializedObject);
         }
-
+ 
         public override void OnGUI(Rect rect, SerializedProperty property, GUIContent label)
         {
-            if(firstTime)
+            if(!properties.Contains(property.serializedObject))
                 Init(property);
-
+ 
             rect.height = EditorGUIUtility.singleLineHeight;
-
+ 
             EditorGUI.PropertyField(rect, m_OverrideStencil, Styles.overrideStencil);
             if (m_OverrideStencil.boolValue)
             {
@@ -88,7 +89,7 @@ namespace UnityEditor.Rendering.Universal
                 EditorGUI.indentLevel--;
             }
         }
-
+ 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             if (m_OverrideStencil != null && m_OverrideStencil.boolValue)
@@ -97,3 +98,4 @@ namespace UnityEditor.Rendering.Universal
         }
     }
 }
+ 
